@@ -1,19 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ClipLoader } from 'react-spinners';
 import type { ModelOption, ChatResponse, FormData } from './types';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
-
-const modelOptions: ModelOption[] = [
-  { value: 'openai/gpt-4', label: 'GPT-4' },
-  { value: 'openai/gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-  { value: 'anthropic/claude-2', label: 'Claude 2' },
-  { value: 'anthropic/claude-instant-1', label: 'Claude Instant' },
-  { value: 'google/palm-2-chat-bison', label: 'PaLM 2 Chat' },
-];
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData>({
@@ -22,9 +14,36 @@ export default function Home() {
     prompt: '',
     selectedModel: null,
   });
+  const [modelOptions, setModelOptions] = useState<ModelOption[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(true);
   const [response, setResponse] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      setModelsLoading(true);
+      try {
+        const res = await fetch('/api/models');
+        const data = await res.json();
+        if (data.data && Array.isArray(data.data)) {
+          setModelOptions(
+            data.data.map((model: any) => ({
+              value: model.id,
+              label: model.id + (model.name ? ` (${model.name})` : ''),
+            }))
+          );
+        } else {
+          setModelOptions([]);
+        }
+      } catch (err) {
+        setModelOptions([]);
+      } finally {
+        setModelsLoading(false);
+      }
+    };
+    fetchModels();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +126,7 @@ export default function Home() {
             value={formData.selectedModel}
             onChange={(option: any) => setFormData({ ...formData, selectedModel: option })}
             isSearchable
+            isLoading={modelsLoading}
             className="text-black"
             required
           />
