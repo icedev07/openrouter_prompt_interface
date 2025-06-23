@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ClipLoader } from 'react-spinners';
-import type { ModelOption, ChatResponse, FormData } from './types';
+import type { ModelOption, FormData } from './types';
 
 const Select = dynamic(() => import('react-select'), { ssr: false });
+
+interface OpenRouterModel {
+  id: string;
+  name?: string;
+}
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData>({
@@ -28,7 +33,7 @@ export default function Home() {
         const data = await res.json();
         if (data.data && Array.isArray(data.data)) {
           setModelOptions(
-            data.data.map((model: any) => ({
+            data.data.map((model: OpenRouterModel) => ({
               value: model.id,
               label: model.id + (model.name ? ` (${model.name})` : ''),
             }))
@@ -36,7 +41,7 @@ export default function Home() {
         } else {
           setModelOptions([]);
         }
-      } catch (err) {
+      } catch {
         setModelOptions([]);
       } finally {
         setModelsLoading(false);
@@ -76,8 +81,8 @@ export default function Home() {
       } else {
         setResponse(JSON.stringify(data, null, 2)); // fallback: show raw response
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +129,7 @@ export default function Home() {
             id="model"
             options={modelOptions}
             value={formData.selectedModel}
-            onChange={(option: any) => setFormData({ ...formData, selectedModel: option })}
+            onChange={(option) => setFormData({ ...formData, selectedModel: option as ModelOption | null })}
             isSearchable
             isLoading={modelsLoading}
             className="text-black"
