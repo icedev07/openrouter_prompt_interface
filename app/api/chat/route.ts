@@ -12,12 +12,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch('https://api.openrouter.ai/api/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+        'X-Title': 'OpenRouter Prompt Interface',
       },
       body: JSON.stringify({
         model: model,
@@ -30,17 +31,17 @@ export async function POST(req: Request) {
       }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      throw new Error(data.error?.message || 'Failed to get response');
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Failed to get response');
     }
 
+    const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: error instanceof Error ? error.message : 'Failed to process request' },
       { status: 500 }
     );
   }

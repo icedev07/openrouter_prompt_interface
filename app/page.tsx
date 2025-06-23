@@ -44,13 +44,19 @@ export default function Home() {
         }),
       });
 
-      const data: ChatResponse = await res.json();
+      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.choices?.[0]?.message?.content || 'Failed to get response');
+        throw new Error(data.error || 'Failed to get response');
       }
 
-      setResponse(data.choices[0].message.content);
+      // Try to extract the assistant's message
+      const assistantMessage = data?.choices?.[0]?.message?.content;
+      if (assistantMessage) {
+        setResponse(assistantMessage);
+      } else {
+        setResponse(JSON.stringify(data, null, 2)); // fallback: show raw response
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -145,7 +151,7 @@ export default function Home() {
       {response && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-2">Response:</h2>
-          <div className="p-4 bg-gray-100 rounded-md whitespace-pre-wrap">
+          <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-md whitespace-pre-wrap text-black dark:text-white">
             {response}
           </div>
         </div>
