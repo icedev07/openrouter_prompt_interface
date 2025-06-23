@@ -89,98 +89,125 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">OpenRouter Prompt Interface</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-2">
-            Your Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="apiKey" className="block text-sm font-medium mb-2">
-            OpenRouter API Key
-          </label>
-          <input
-            type="password"
-            id="apiKey"
-            value={formData.apiKey}
-            onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="model" className="block text-sm font-medium mb-2">
-            Select Model
-          </label>
-          <Select
-            id="model"
-            options={modelOptions}
-            value={formData.selectedModel}
-            onChange={(option) => setFormData({ ...formData, selectedModel: option as ModelOption | null })}
-            isSearchable
-            isLoading={modelsLoading}
-            className="text-black"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="prompt" className="block text-sm font-medium mb-2">
-            Your Prompt
-          </label>
-          <textarea
-            id="prompt"
-            value={formData.prompt}
-            onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
-            className="w-full p-2 border rounded-md h-32"
-            required
-            disabled={isLoading}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 disabled:bg-blue-300"
-        >
-          {isLoading ? (
-            <div className="flex items-center justify-center">
-              <ClipLoader size={20} color="white" />
-              <span className="ml-2">Processing...</span>
-            </div>
-          ) : (
-            'Submit'
-          )}
-        </button>
-      </form>
-
-      {error && (
-        <div className="mt-6 p-4 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
-
-      {response && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Response:</h2>
-          <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-md whitespace-pre-wrap text-black dark:text-white">
-            {response}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-pink-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 flex flex-col items-center justify-center py-10 px-2">
+      <div className="w-full max-w-2xl bg-white dark:bg-gray-900 shadow-2xl rounded-3xl p-8 sm:p-12 border border-gray-200 dark:border-gray-800">
+        <div className="flex items-center mb-8 gap-4">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-indigo-500 text-white text-2xl font-extrabold shadow-lg select-none">
+            T
+          </div>
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+              Toloka.ai
+              <span className="text-lg font-semibold text-indigo-500 ml-2">OpenRouter Prompt Interface</span>
+            </h1>
           </div>
         </div>
-      )}
-    </main>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-400 outline-none transition"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="apiKey" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
+              OpenRouter API Key
+            </label>
+            <input
+              type="password"
+              id="apiKey"
+              value={formData.apiKey}
+              onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-400 outline-none transition"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="model" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
+              Select Model
+            </label>
+            <Select
+              id="model"
+              options={modelOptions}
+              value={formData.selectedModel}
+              onChange={(option) => setFormData({ ...formData, selectedModel: option as ModelOption | null })}
+              isSearchable
+              isLoading={modelsLoading}
+              className="text-black"
+              required
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  backgroundColor: '#f3f4f6',
+                  borderColor: '#a5b4fc',
+                  minHeight: '48px',
+                  boxShadow: 'none',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 100,
+                }),
+              }}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="prompt" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-200">
+              Your Prompt
+            </label>
+            <textarea
+              id="prompt"
+              value={formData.prompt}
+              onChange={(e) => setFormData({ ...formData, prompt: e.target.value })}
+              className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-400 outline-none transition h-32 resize-none"
+              required
+              disabled={isLoading}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 text-white p-3 rounded-lg font-bold text-lg shadow-md hover:from-indigo-500 hover:to-pink-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <ClipLoader size={22} color="white" />
+                <span className="ml-3">Processing...</span>
+              </div>
+            ) : (
+              'Submit'
+            )}
+          </button>
+        </form>
+
+        {error && (
+          <div className="mt-6 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg border border-red-200 dark:border-red-700 shadow">
+            {error}
+          </div>
+        )}
+
+        {response && (
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">Response:</h2>
+            <div className="p-5 bg-gradient-to-br from-indigo-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-xl whitespace-pre-wrap text-gray-900 dark:text-white border border-indigo-100 dark:border-gray-700 shadow-inner min-h-[56px]">
+              {response}
+            </div>
+          </div>
+        )}
+      </div>
+      <footer className="mt-10 text-gray-500 dark:text-gray-400 text-sm text-center">
+        &copy; {new Date().getFullYear()} Toloka.ai. Powered by OpenRouter.
+      </footer>
+    </div>
   );
 }
